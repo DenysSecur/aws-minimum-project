@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  service1:
+    build: ./backend-service-1
+    ports:
+      - "5050:5000"
+    depends_on:
+      - service2
+      - db
+    environment:
+      - DATABASE_URL=postgres://user:pass@db:5432/mydb
+
+  service2:
+    build: ./backend-service-2
+    ports:
+      - "5051:5001"
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://user:pass@db:5432/mydb
+
+  db:
+    image: postgres:14
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
+
